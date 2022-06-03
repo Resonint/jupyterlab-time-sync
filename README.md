@@ -1,55 +1,46 @@
 # jupyterlab_time_sync
 
-![Github Actions Status](https://github.com/my_name/myextension/workflows/Build/badge.svg)
-
 Jupyterlab Extension to sync Server time with Client time
 
 
 ## Requirements
 
-* JupyterLab >= 1.0
+* JupyterLab = 1.2.*
+
+May work with other versions, may require modifying dependency versions in `package.json`.
 
 ## Install
 
+JupyterLab client extension:
+
 ```bash
-jupyter labextension install jupyterlab_time_sync
+# from repository root directory
+jupyter labextension install
 ```
 
-## Contributing
-
-### Install
-
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
-`yarn` or `npm` in lieu of `jlpm` below.
-
+JupyterLab server extension:
 ```bash
-# Clone the repo to your local environment
-# Move to jupyterlab_time_sync directory
-# Install dependencies
-jlpm
-# Build Typescript source
-jlpm build
-# Link your development version of the extension with JupyterLab
-jupyter labextension link .
-# Rebuild Typescript source after making changes
-jlpm build
-# Rebuild JupyterLab after making any changes
-jupyter lab build
+# from repository root directory
+pip install .
 ```
 
-You can watch the source directory and run JupyterLab in watch mode to watch for changes in the extension's source and automatically rebuild the extension and application.
+Then enable the server extension by editing `jupyter_notebook_config.json` (usually located at `~/.jupyter/jupyter_notebook_config.json`) and adding `"jupyterlab_time_sync": true` to `NotebookApp.nbserver_extensions`, e.g. (merge with existing content):
 
-```bash
-# Watch the source directory in another terminal tab
-jlpm watch
-# Run jupyterlab in watch mode in one terminal tab
-jupyter lab --watch
+```json
+{
+  "NotebookApp": {
+    "nbserver_extensions": {
+      "jupyterlab_time_sync": true
+    }
+  }
+}
 ```
 
 ### Uninstall
 
 ```bash
 jupyter labextension uninstall jupyterlab_time_sync
+pip uninstall jupyterlab_time_sync
 ```
 
+Also remove the line from `jupyter_notebook_config.json`.
