@@ -6,6 +6,8 @@ import {
   ICommandPalette
 } from '@jupyterlab/apputils';
 
+import moment from 'moment-timezone';
+
 
 /**
  * Initialization data for the jupyterlab_time_sync extension.
@@ -21,9 +23,33 @@ const extension: JupyterFrontEndPlugin<void> = {
     const command: string = 'time_sync:run';
     app.commands.addCommand(command, {
       label: 'Resync',
-      execute: () => {
-        let dt = new Date();
-        console.log('Syncing Time:', dt);
+      execute: async () => {
+        let time_data = {
+          timestamp: moment().toISOString(),
+          timezone: moment.tz.guess()
+        }
+        // console.log('Syncing Time:', time_data);
+        let _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
+        // console.log('_xsrf:', _xsrf);
+        const msg = await fetch(window.location.origin+"/jupyterlab_time_sync", {
+          credentials: 'same-origin',
+          method: 'POST',
+          body: JSON.stringify(time_data),
+          headers: {
+            'Content-Type': 'application/json',
+            'X-XSRFToken': _xsrf
+          }
+        });
+        
+        if (!msg.ok) 
+        { 
+            console.error("Error");
+        }
+        else if (msg.status >= 400) {
+            console.error('HTTP Error: '+msg.status+' - '+msg.statusText);
+        } else {
+          // Success
+        }
       }
     });
 
