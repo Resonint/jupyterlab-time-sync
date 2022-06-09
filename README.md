@@ -15,8 +15,12 @@ JupyterLab client extension:
 
 ```bash
 # from repository root directory
-jupyter labextension install
+jlpm install
+jlpm run build
+jupyter labextension install .
 ```
+
+May need to run `export NODE_OPTIONS=--openssl-legacy-provider` if jupyterlab fails to build with error `'ERR_OSSL_EVP_UNSUPPORTED'`.
 
 JupyterLab server extension:
 ```bash
