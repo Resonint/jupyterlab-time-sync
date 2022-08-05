@@ -1,10 +1,13 @@
 import {
-  JupyterFrontEnd, JupyterFrontEndPlugin
+  JupyterFrontEnd,
+  JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
 import {
   ICommandPalette
 } from '@jupyterlab/apputils';
+
+import { requestAPI } from './handler';
 
 import moment from 'moment-timezone';
 
@@ -13,32 +16,20 @@ async function resync() {
     timestamp: moment().toISOString(),
     timezone: moment.tz.guess()
   }
-  // console.log('Syncing Time:', time_data);
+  console.log('Syncing Time:', time_data);
 
-  let _xsrf = document.cookie.match("\\b_xsrf=([^;]*)\\b")[1];
-  // console.log('_xsrf:', _xsrf);
-
-  const msg = await fetch(window.location.origin+"/jupyterlab_time_sync", {
-    credentials: 'same-origin',
-    method: 'POST',
-    body: JSON.stringify(time_data),
-    headers: {
-      'Content-Type': 'application/json',
-      'X-XSRFToken': _xsrf
-    }
-  });
-
-  if (!msg.ok)
-  {
-    console.error("Error");
-  }
-  else if (msg.status >= 400) {
-    console.error('HTTP Error: '+msg.status+' - '+msg.statusText);
-  } else {
-    console.log('Time Sync Successful');
-  }
+  requestAPI<any>({
+      method: 'POST',
+      body: JSON.stringify(time_data)})
+    .then(data => {
+      console.log(data);
+    })
+    .catch(reason => {
+      console.error(
+        `jupyterlab_time_sync error: ${reason}`
+      );
+    });
 }
-
 
 /**
  * Initialization data for the jupyterlab_time_sync extension.

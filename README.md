@@ -1,50 +1,83 @@
 # jupyterlab_time_sync
 
+![Github Actions Status](https://github.com/Resonint/jupyterlab-time-sync/workflows/Build/badge.svg)
+
 Jupyterlab Extension to sync Server time with Client time
+
+
+This extension is composed of a Python package named `jupyterlab_time_sync`
+for the server extension and a NPM package named `jupyterlab_time_sync`
+for the frontend extension.
 
 
 ## Requirements
 
-* JupyterLab = 1.2.*
-
-May work with other versions, may require modifying dependency versions in `package.json`.
+* JupyterLab >= 3.0
 
 ## Install
 
-JupyterLab client extension:
+```bash
+pip install jupyterlab_time_sync
+```
+
+
+## Troubleshoot
+
+If you are seeing the frontend extension, but it is not working, check
+that the server extension is enabled:
 
 ```bash
-# from repository root directory
-jlpm install
+jupyter server extension list
+```
+
+If the server extension is installed and enabled, but you are not seeing
+the frontend extension, check the frontend extension is installed:
+
+```bash
+jupyter labextension list
+```
+
+
+## Contributing
+
+### Development install
+
+Note: You will need NodeJS to build the extension package.
+
+The `jlpm` command is JupyterLab's pinned version of
+[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
+`yarn` or `npm` in lieu of `jlpm` below.
+
+```bash
+# Clone the repo to your local environment
+# Change directory to the jupyterlab_time_sync directory
+# Install package in development mode
+pip install -e .
+# Link your development version of the extension with JupyterLab
+jupyter labextension develop . --overwrite
+# Rebuild extension Typescript source after making changes
 jlpm run build
-jupyter labextension install .
 ```
 
-May need to run `export NODE_OPTIONS=--openssl-legacy-provider` if jupyterlab fails to build with error `'ERR_OSSL_EVP_UNSUPPORTED'`.
+You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
 
-JupyterLab server extension:
 ```bash
-# from repository root directory
-pip install .
+# Watch the source directory in one terminal, automatically rebuilding when needed
+jlpm run watch
+# Run JupyterLab in another terminal
+jupyter lab
 ```
 
-Then enable the server extension by editing `jupyter_notebook_config.json` (usually located at `~/.jupyter/jupyter_notebook_config.json`) and adding `"jupyterlab_time_sync": true` to `NotebookApp.nbserver_extensions`, e.g. (merge with existing content):
+With the watch command running, every saved change will immediately be built locally and available in your running JupyterLab. Refresh JupyterLab to load the change in your browser (you may need to wait several seconds for the extension to be rebuilt).
 
-```json
-{
-  "NotebookApp": {
-    "nbserver_extensions": {
-      "jupyterlab_time_sync": true
-    }
-  }
-}
+By default, the `jlpm run build` command generates the source maps for this extension to make it easier to debug using the browser dev tools. To also generate source maps for the JupyterLab core extensions, you can run the following command:
+
+```bash
+jupyter lab build --minimize=False
 ```
 
 ### Uninstall
 
 ```bash
-jupyter labextension uninstall jupyterlab_time_sync
 pip uninstall jupyterlab_time_sync
 ```
-
-Also remove the line from `jupyter_notebook_config.json`.
