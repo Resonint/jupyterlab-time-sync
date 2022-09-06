@@ -20,6 +20,26 @@ for the frontend extension.
 pip install jupyterlab_time_sync
 ```
 
+## Usage with docker
+
+When running in a docker container set these environment vars in the Dockerfile:
+```
+ENV TIMEZONE_PATH "/etc/timezone"
+ENV LOCALTIME_PATH "/etc/localtime"
+```
+
+If you want the time zone to persist when recreating the container then make symbolic links to a directory that can be mounted as a volume, e.g. Dockerfile:
+```
+ENV TIMEZONE_PATH "/root/.local/etc/timezone"
+ENV LOCALTIME_PATH "/root/.local/etc/localtime"
+RUN mkdir -p /root/.local/etc
+RUN echo "Etc/UTC" > /root/.local/etc/timezone
+RUN cp /usr/share/zoneinfo/Etc/UTC /root/.local/etc/localtime
+RUN rm /etc/timezone && ln -s $TIMEZONE_PATH /etc/timezone
+RUN rm /etc/localtime && ln -s $LOCALTIME_PATH /etc/localtime
+```
+and mount `/root/.local/etc/` from a host directory.
+
 
 ## Troubleshoot
 
