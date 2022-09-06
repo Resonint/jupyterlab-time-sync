@@ -27,7 +27,7 @@ class RouteHandler(APIHandler):
         if 'LOCALTIME_PATH' in os.environ and 'TIMEZONE_PATH' in os.environ:
             # don't use sudo or timedatectl
             subprocess.run(['date', '-s', data['timestamp']])
-            with open(os.environ['TIMEZONE_PATH'], 'w') as f:
+            with open(os.environ['TIMEZONE_PATH'], 'w+') as f:
                 f.write(data['timezone'])
             subprocess.run(['rm', os.environ['LOCALTIME_PATH']]) # in case it is a symbolic link
             subprocess.run([
